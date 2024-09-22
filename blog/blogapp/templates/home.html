@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+     <!-- Welcome message and Logout, aligned in the same line -->
+    <div class="welcome-section" style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 20px;">
+        <h2><a href="{% url 'home' %}">Your Thoughts!!</a></h2>
+        <p style="margin-left: 55em;">Welcome, {{ user }}!</p>
+        <p style="margin: 0;"><a href="{% url 'logout' %}">Logout</a></p>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-container">
+        <form method="GET" action="{% url 'blog_search' %}">
+            <input type="text" name="q" id="search-input" placeholder="Search...">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+
+    <h3 style="color: #4b0082;">Recent Blogs</h3>
+    
+    <!-- Blog List View -->
+    {% for blog in page_obj %}
+        <div class="row">
+            <div class="column" style="background-color:#ddd;">
+                <h3>{{ blog.title }} <small>~ by {{ blog.author.first_name }}</small></h3>
+                <a href="{% url 'blog_detail' blog.slug %}">Read more</a>
+        </div>
+        <br>
+    {% endfor %}
+
+    <!-- Pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}

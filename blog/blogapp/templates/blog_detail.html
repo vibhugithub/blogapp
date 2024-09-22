@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div style="width: 70%; float: left; margin-right: 2%;">
+   
+    <a href="{% url 'home' %}">Home</a><br><br>
+    
+    <article class="blog-post">
+        <h2 style=" font-size: 28px; margin-top: 0;">{{ blog.title }}</h2>
+        <hr>
+        <small style=" color: grey;">
+            Published {{ blog.created_at|date:"M d, Y, P" }} by {{ blog.author.first_name }}
+        </small>
+        <p style=" line-height: 1.6; font-size: 16px;">{{ blog.content }}</p>
+    </article>
+    
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
+    <!-- Include the modal template -->
+    {% include 'share.html' %}
+    <!--############################################################################################################### -->
+    <hr>
+
+    <!-- Include the Comments Section  -->
+    <h3>Comments</h3>
+    
+    <ul>
+        {% for comment in blog.comments.all %}
+        <li><b>{{ comment.user.first_name }}</b> - {{ comment.text }}  
+            <small> ({{ comment.created_at }})</small>
+        </li>
+        <span class="like-container">
+            <i class="fa fa-thumbs-up {% if request.user in comment.likes.all %} liked {% else %} not-liked {% endif %}" 
+                onclick="toggleLike(this, {{ comment.id }})"></i>
+            <span id="likes-count-{{ comment.id }}">{{ comment.likes.count }}</span>
+        </span>
+        {% endfor %}
+    </ul>
+    <hr>
+
+    <!-- Include the write a comment -->
+    <h3>Leave a comment:</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" style="background-color: #4b0082; color: white;">Post Comment</button>
+    </form>
+</div>
+    <!-- Sidebar Section -->
+    <div style="width: 25%; float: right; background-color: #b3afaf; padding: 20px; text-align: left; margin-top: 20px; min-height: 100px;">
+        {% if blog.author == request.user %}
+            <h3>My blog</h3>
+            <p>This is my blog.</p>
+        {% else %}
+            <h3>{{ blog.author.first_name }}'s blog</h3>
+            <p>This is {{ blog.author.first_name }}'s blog.</p>
+        {% endif %}
+    </div>
+
+    <!-- Clearing floats -->
+    <div style="clear: both;"></div>
+
+    <script>
+        function toggleLike(element, commentId) {
+            fetch(`/comment/${commentId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.liked) {
+                    element.classList.add("liked");  // Add blue color for liked
+                    element.classList.remove("not-liked");
+                } else {
+                    element.classList.remove("liked");  // Remove blue, set back to grey
+                    element.classList.add("not-liked");
+                }
+                document.getElementById(`likes-count-${commentId}`).textContent = data.likes_count;
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Trigger button for the modal -->
+    <button onclick="openModal()" class="btn btn-primary" style="background-color: #4b0082; color: white;">Share this post</button>
+
+    <!-- Custom modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Share this blog via email:</h3>
+            <form method="POST" action="{% url 'share_blog' blog.id %}">
+                {% csrf_token %}
+                <input type="email" name="email" placeholder="Enter email" required>
+                <button type="submit" style="background-color: #4b0082; color: white;">Share</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for the modal -->
+    <script>
+        function openModal() {
+            document.getElementById('myModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+
+        // Close the modal if the user clicks outside of the modal content
+        window.onclick = function(event) {
+            var modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+{% endblock %}

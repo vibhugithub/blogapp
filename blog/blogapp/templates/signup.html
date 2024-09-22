@@ -1,0 +1,27 @@
+{% extends 'base.html' %} 
+{% block content %}
+<nav>
+    <a href="{% url 'login' %}">Login</a>
+</nav>
+<h2>Sign Up</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" name="name" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" name="email" required><br>
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" required><br>
+
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" name="confirm_password" required><br>
+
+    {% if error %}
+        <p style="color: red">{{ error }}</p>
+    {% endif %}
+
+    <button type="submit" style="background-color: #4b0082; color: white;">Sign Up</button>
+</form>
+{% endblock %}
