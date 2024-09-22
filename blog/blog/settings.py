@@ -130,4 +130,9 @@ TAGGIT_CASE_INSENSITIVE = True
 LOGIN_REDIRECT_URL = "home"
 
 
-FCM_NOTIFICATION_SENDER_ID = os.getenv("FCM_NOTIFICATION_SENDER_ID", default="")
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", default="")
+EMAIL_HOST = os.getenv("EMAIL_HOST", default="")
+EMAIL_PORT = os.getenv("EMAIL_PORT", default="")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", default="")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", default="")

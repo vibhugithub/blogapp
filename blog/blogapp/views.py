@@ -150,12 +150,13 @@ def share_blog(request, blog_id):
             send_mail(
                 subject=f"Check out this blog post: {post.title}",
                 message=f"Read the blog post here: {request.build_absolute_uri(post.get_absolute_url())}",
-                from_email="",
+                from_email=settings.EMAIL_HOST_USER,
                 recipient_list=[email],
                 fail_silently=False,
             )
-            messages.success(request, f"Blog post successfully shared with {email}")
+            # messages.success(request, f"Blog post successfully shared with {email}")
         except Exception as e:
+
             messages.error(request, f"Failed to send email: {str(e)}")
 
         return redirect(post.get_absolute_url())
